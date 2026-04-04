@@ -82,7 +82,7 @@ Just visit the link: [hlebushek77.github.io/Hleb-Duco-Monitor/](https://hlebushe
 ## 🏆 Credits / Благодарности
 This project was created and designed with the help of: / Проект был создан при поддержке:
 * 🤖 **Gemini AI** — code architecture, logic, and UI design. / архитектура кода, логика и дизайн.
-* 🍞 **Duino-Coin Team** — for the amazing ecosystem and [open API](). / за крутую экосистему и открытый API.
+* 🍞 **Duino-Coin Team** — for the amazing ecosystem and open API./ за крутую экосистему и открытый API.
 
 ---
 
