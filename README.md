@@ -28,7 +28,7 @@
 **Hleb Duco Monitor** is a lightweight and fast solution for keeping your rigs under control. No more refreshing your wallet page: charts and statistics update automatically.
 
 ### ⚙️ How it Works
-The monitor calls the official [Duino-Coin API](https://server.duinocoin.com/api.json) every 30 seconds. This provides real-time updates for your balance and worker status without page reloads.
+The monitor calls the official [Duino-Coin API]([https://server.duinocoin.com/api.json](https://github.com/duino-coin/duco-rest-api)) every 30 seconds. This provides real-time updates for your balance and worker status without page reloads.
 
 ### ✨ Key Features
 - 📈 **Live Charts:** Dynamic hashrate graphs (Plotly/Chart.js).
@@ -47,7 +47,7 @@ Just visit the link: [hlebushek77.github.io/Hleb-Duco-Monitor/](https://hlebushe
 **Hleb Duco Monitor** — это легкое и быстрое решение для тех, кто хочет держать свои риги под контролем. Больше не нужно вручную обновлять страницу кошелька: графики и статистика обновляются автоматически.
 
 ### ⚙️ Как это работает
-Мониторинг обращается к официальному [Duino-Coin API](https://server.duinocoin.com/api.json) каждые 30 секунд. Это позволяет получать актуальный баланс и статус ваших воркеров в режиме реального времени без необходимости перезагрузки страницы.
+Мониторинг обращается к официальному [Duino-Coin API]([https://server.duinocoin.com/api.json](https://github.com/duino-coin/duco-rest-api)) каждые 30 секунд. Это позволяет получать актуальный баланс и статус ваших воркеров в режиме реального времени без необходимости перезагрузки страницы.
 
 ### ✨ Ключевые особенности
 - 📈 **Live Charts:** Динамические графики хешрейта (Plotly/Chart.js).
