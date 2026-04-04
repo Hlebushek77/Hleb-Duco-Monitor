@@ -1,5 +1,6 @@
 # 🍞 Hleb Duco Web Monitoring
-> **Real-time web interface for monitoring Duino-Coin mining.** > **Веб-интерфейс для мониторинга майнинга Duino-Coin в реальном времени.**
+> **Real-time web interface for monitoring Duino-Coin mining.**
+> **Веб-интерфейс для мониторинга майнинга Duino-Coin в реальном времени.**
 
 <p align="center">
   <img src="images/Hleb.png" alt="Logo" width="180" style="border-radius: 50%; box-shadow: 0 4px 8px rgba(0,0,0,0.2);">
@@ -28,7 +29,7 @@
 **Hleb Duco Monitor** is a lightweight and fast solution for keeping your rigs under control. No more refreshing your wallet page: charts and statistics update automatically.
 
 ### ⚙️ How it Works
-The monitor calls the official [Duino-Coin API]([https://server.duinocoin.com/api.json](https://github.com/duino-coin/duco-rest-api)) every 30 seconds. This provides real-time updates for your balance and worker status without page reloads.
+The monitor calls the official [Duino-Coin API](https://github.com/duino-coin/duco-rest-api) every 30 seconds. This provides real-time updates for your balance and worker status without page reloads.
 
 ### ✨ Key Features
 - 📈 **Live Charts:** Dynamic hashrate graphs (Plotly/Chart.js).
@@ -47,7 +48,7 @@ Just visit the link: [hlebushek77.github.io/Hleb-Duco-Monitor/](https://hlebushe
 **Hleb Duco Monitor** — это легкое и быстрое решение для тех, кто хочет держать свои риги под контролем. Больше не нужно вручную обновлять страницу кошелька: графики и статистика обновляются автоматически.
 
 ### ⚙️ Как это работает
-Мониторинг обращается к официальному [Duino-Coin API]([https://server.duinocoin.com/api.json](https://github.com/duino-coin/duco-rest-api)) каждые 30 секунд. Это позволяет получать актуальный баланс и статус ваших воркеров в режиме реального времени без необходимости перезагрузки страницы.
+Мониторинг обращается к официальному [Duino-Coin API](https://github.com/duino-coin/duco-rest-api) каждые 30 секунд. Это позволяет получать актуальный баланс и статус ваших воркеров в режиме реального времени без необходимости перезагрузки страницы.
 
 ### ✨ Ключевые особенности
 - 📈 **Live Charts:** Динамические графики хешрейта (Plotly/Chart.js).
@@ -81,7 +82,7 @@ Just visit the link: [hlebushek77.github.io/Hleb-Duco-Monitor/](https://hlebushe
 ## 🏆 Credits / Благодарности
 This project was created and designed with the help of: / Проект был создан при поддержке:
 * 🤖 **Gemini AI** — code architecture, logic, and UI design. / архитектура кода, логика и дизайн.
-* 🍞 **Duino-Coin Team** — for the amazing ecosystem and open API. / за крутую экосистему и открытый API.
+* 🍞 **Duino-Coin Team** — for the amazing ecosystem and [open API](https://github.com/duino-coin). / за крутую экосистему и открытый API.
 
 ---
 
