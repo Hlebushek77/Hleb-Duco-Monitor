@@ -1,6 +1,11 @@
 // --- Переводы ---
 const i18n = {
     ru: {
+        thUptime: "Время работы",
+        unitDay: "д",
+        unitHour: "ч",
+        unitMin: "м",
+        unitSec: "с", // <-- Запятая здесь была пропущена!
         placeholder: "Введите никнейм DUCO...",
         btnSearch: "Поиск",
         waiting: "Ожидание ввода...",
@@ -27,6 +32,11 @@ const i18n = {
         realTime: "(в реальном времени)"
     },
     en: {
+        thUptime: "Uptime",
+        unitDay: "d",
+        unitHour: "h",
+        unitMin: "m",
+        unitSec: "s", // <-- И здесь тоже
         placeholder: "Enter DUCO username...",
         btnSearch: "Search",
         waiting: "Waiting for input...",
@@ -162,6 +172,24 @@ function formatHashrate(hs) {
     return h.toFixed(2) + ' H/s';
 }
 
+function formatUptime(seconds) {
+    if (!seconds || seconds < 0) return "---";
+    
+    // Берем текущие переводы из объекта i18n
+    const t = i18n[currentLang]; 
+    
+    const s = parseInt(seconds);
+    const d = Math.floor(s / 86400);
+    const h = Math.floor((s % 86400) / 3600);
+    const m = Math.floor((s % 3600) / 60);
+    const sec = s % 60;
+
+    // Используем ключи unitDay, unitHour и т.д., которые мы добавили в i18n
+    if (d > 0) return `${d}${t.unitDay} ${h}${t.unitHour}`;
+    if (h > 0) return `${h}${t.unitHour} ${m}${t.unitMin}`;
+    return `${m}${t.unitMin} ${sec}${t.unitSec}`;
+}
+
 // --- Логика интерфейса ---
 function updateLanguageUI() {
     const t = i18n[currentLang];
@@ -179,7 +207,8 @@ function updateLanguageUI() {
         'thHashrate': { p: 'innerText', v: t.thHashrate },
         'thEff': { p: 'innerText', v: t.thEff },
         'thShares': { p: 'innerText', v: t.thShares },
-        'thStatus': { p: 'innerText', v: t.thStatus }
+        'thStatus': { p: 'innerText', v: t.thStatus },
+        'thUptime': { p: 'innerText', v: t.thUptime },
     };
 
     for (const [id, data] of Object.entries(elements)) {
@@ -193,7 +222,7 @@ function updateLanguageUI() {
     const lastUpd = document.getElementById('lastUpdate');
     if (lastUpd && !currentUsername) lastUpd.innerText = t.waiting;
 
-    if (lastFetchedResult) updateUI(lastFetchedResult, false);
+    if (lastFetchedResult) (lastFetchedResult, false);
     updateChartTheme();
 }
 
@@ -332,10 +361,11 @@ function updateUI(res, shouldUpdateChart = true) {
         hashrateChart.update('active');
     }
 
-    const tbody = document.getElementById('workersTableBody');
+   const tbody = document.getElementById('workersTableBody');
     if (tbody) {
         if (!miners.length) {
-            tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:30px; color:var(--text-muted)">${t.noMiners}</td></tr>`;
+            // Тут меняем colspan с 6 на 7, так как колонок стало больше
+            tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding:30px; color:var(--text-muted)">${t.noMiners}</td></tr>`;
         } else {
             tbody.innerHTML = miners.map(m => {
                 const hr = parseFloat(m.hashrate) || 0;
@@ -354,13 +384,13 @@ function updateUI(res, shouldUpdateChart = true) {
                         <div class="efficiency-bar-bg"><div class="efficiency-bar-fill" style="width:${eff}%; background:${color}"></div></div>
                     </td>
                     <td>${accepted} / ${rejected}</td>
+                    <td>${formatUptime(m.diff)}</td> 
                     <td><span class="status-badge ${hr > 0 ? 'online' : 'offline'}">${hr > 0 ? t.statusOnline : t.statusOffline}</span></td>
                 </tr>`;
             }).join('');
         }
     }
 }
-
 function handleSearch() {
     isFirstLoad = true;
     fetchDuinoData(false);
