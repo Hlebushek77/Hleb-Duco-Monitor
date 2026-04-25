@@ -9,29 +9,35 @@ import {
   Cpu, 
   Globe, 
   Search, 
-  User, 
-  Wallet,
+  Smartphone,
+  HardDrive,
+  Infinity as InfinityIcon,
   Zap,
-  Hammer,
-  Image as ImageIcon,
   Loader2,
   AlertCircle,
   LayoutDashboard,
-  Sun,
-  Moon,
+  User, 
+  Wallet,
   ChevronRight,
-  DollarSign,
-  ShieldCheck,
   Info,
-  ArrowDown,
-  ArrowUp,
-  ArrowLeftRight,
-  ChevronsDown,
-  ChevronsUp,
+  ShieldCheck,
+  RefreshCcw,
+  ExternalLink,
+  Github,
+  Moon,
+  Sun,
+  Languages,
+  ArrowUpRight,
+  ArrowDownRight,
   TrendingUp,
+  TrendingDown,
   History,
+  Clock,
   PieChart as PieChartIcon,
-  Star
+  ArrowLeftRight,
+  Star,
+  Box,
+  DollarSign
 } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import { 
@@ -63,9 +69,31 @@ function formatHashrate(hs: number) {
   return h.toFixed(2) + " H/s";
 }
 
+function getMinerColor(name: string) {
+  const n = name.toLowerCase();
+  if (n.includes("esp32")) return "#9C27B0"; // Purple
+  if (n.includes("esp8266")) return "#546E7A"; // Grey Blue
+  if (n.includes("arduino")) return "#4CAF50"; // Green
+  if (n.includes("rpi") || n.includes("raspberry")) return "#00BCD4"; // Cyan
+  if (n.includes("cpu") || n.includes("computer")) return "#FFB300"; // Orange
+  if (n.includes("web") || n.includes("browser")) return "#F44336"; // Red
+  if (n.includes("phone") || n.includes("android") || n.includes("ios")) return "#3F51B5"; // Indigo
+  return "#424242"; // Grey
+}
+
+function getMinerIcon(name: string) {
+  const n = name.toLowerCase();
+  if (n.includes("phone") || n.includes("android")) return <Smartphone className="w-4 h-4" />;
+  if (n.includes("web") || n.includes("browser")) return <Globe className="w-4 h-4" />;
+  if (n.includes("other")) return <InfinityIcon className="w-4 h-4" />;
+  if (n.includes("cpu") || n.includes("computer")) return <HardDrive className="w-4 h-4" />;
+  if (n.includes("rpi")) return <Box className="w-4 h-4" />;
+  return <Cpu className="w-4 h-4" />;
+}
+
 // --- Types ---
 type Language = "ru" | "en" | "pl";
-type Tab = "monitoring" | "mining" | "account";
+type Tab = "monitoring" | "account";
 
 interface Miner {
   hashrate: number;
@@ -106,12 +134,11 @@ const translations = {
     ru: {
         title: "Hleb Duino-Coin Monitor",
         monitoring: "Мониторинг",
-        mining: "Майнинг",
         account: "Аккаунт",
         placeholder: "Введите никнейм DUCO...",
         btnSearch: "Поиск",
         lblHashrate: "Общий Хешрейт",
-        lblWorkers: "Твои Воркеры",
+        lblWorkers: "Устройства",
         lblDifficulty: "Сложность",
         lblChartTitle: "График хешрейта",
         lblApprox: "Примерно",
@@ -143,34 +170,25 @@ const translations = {
         lblIn24h: "через 24 часа",
         lblDaily: "Суточный",
         lblWeekly: "Недельный",
-        webMiner: "Веб-майнер",
-        startMining: "Запустить майнинг",
-        stopMining: "Остановить",
-        threads: "Потоки",
-        miningKey: "Ключ майнинга",
-        miningDiff: "Сложность",
-        sharesAccepted: "Принято шар",
-        localHashrate: "Локальный хешрейт",
         lblCreated: "Создан",
         lblVerified: "Верифицирован",
         lblYes: "Да",
         lblNo: "Нет",
         lblFrom: "от",
         lblTo: "для",
-        thSoftware: "Программное обеспечение",
-        thIdentifier: "Идентификатор",
-        thAccepted: "Принял",
-        thRejected: "Отклоненный",
-        thDiff: "Разница",
+        thSoftware: "ПО",
+        thIdentifier: "ID Воркера",
+        thAccepted: "Принято",
+        thRejected: "Отклонено",
+        thDiff: "Сложность",
         thPing: "Пинг",
-        thPool: "Бассейн",
-        thType: "Это",
-        thThread: "Идентификатор потока"
+        thPool: "Пул",
+        thType: "Тип",
+        thThread: "Поток"
     },
     en: {
         title: "Hleb Duino-Coin Monitor",
         monitoring: "Monitoring",
-        mining: "Mining",
         account: "Account",
         placeholder: "Enter DUCO username...",
         btnSearch: "Search",
@@ -207,14 +225,6 @@ const translations = {
         lblIn24h: "in 24h",
         lblDaily: "Daily",
         lblWeekly: "Weekly",
-        webMiner: "Web Miner",
-        startMining: "Start Mining",
-        stopMining: "Stop Mining",
-        threads: "Threads",
-        miningKey: "Mining Key",
-        miningDiff: "Difficulty",
-        sharesAccepted: "Accepted Shares",
-        localHashrate: "Local Hashrate",
         lblCreated: "Created At",
         lblVerified: "Verified",
         lblYes: "Yes",
@@ -234,7 +244,6 @@ const translations = {
     pl: {
         title: "Hleb Duino-Coin Monitor",
         monitoring: "Monitorowanie",
-        mining: "Mining",
         account: "Konto",
         placeholder: "Wpisz nazwę użytkownika...",
         btnSearch: "Szukaj",
@@ -260,14 +269,6 @@ const translations = {
         balance: "Saldo",
         duco: "DUCO",
         policy: "Polityka prywatności",
-        webMiner: "Web Miner",
-        startMining: "Uruchom Mining",
-        stopMining: "Zatrzymaj",
-        threads: "Wątki",
-        miningKey: "Klucz",
-        miningDiff: "Slożność",
-        sharesAccepted: "Zaakceptowane",
-        localHashrate: "Hashrate lokalny",
         lblRecentTrans: "Ostatnie transakcje",
         lblMinerDist: "Dystrybucja górników",
         lblEstProfit: "Przewidywany zysk",
@@ -280,7 +281,7 @@ const translations = {
         lblDaily: "Dzienny",
         lblWeekly: "Tygodniowy",
         lblCreated: "Utworzono",
-        lblVerified: "Zweryfikowany",
+        lblVerified: "Weryfikacja",
         lblYes: "Tak",
         lblNo: "Nie",
         lblFrom: "od",
@@ -298,8 +299,14 @@ const translations = {
 };
 
 export default function App() {
-  const [lang, setLang] = useState<Language>("ru");
-  const [theme, setTheme] = useState<"dark" | "light">("dark");
+  const [lang, setLang] = useState<Language>(() => {
+    const saved = localStorage.getItem("duco_lang");
+    return (saved as Language) || "ru";
+  });
+  const [theme, setTheme] = useState<"dark" | "light">(() => {
+    const saved = localStorage.getItem("duco_theme");
+    return (saved === "light" ? "light" : "dark");
+  });
   const [activeTab, setActiveTab] = useState<Tab>("monitoring");
   const [username, setUsername] = useState("");
   const [loading, setLoading] = useState(false);
@@ -317,16 +324,65 @@ export default function App() {
 
   const t = translations[lang];
 
+  useEffect(() => {
+    localStorage.setItem("duco_lang", lang);
+  }, [lang]);
+
+  useEffect(() => {
+    localStorage.setItem("duco_theme", theme);
+    if (theme === "dark") {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+  }, [theme]);
+
+  const processStats = (statsRes: any) => {
+    if (!statsRes || typeof statsRes !== 'object') return;
+
+    if (statsRes["Duco price"]) setPrice(parseFloat(statsRes["Duco price"]));
+    if (statsRes["Current difficulty"]) setDifficulty(statsRes["Current difficulty"]);
+      
+    const rawDist = statsRes["Miner distribution"];
+    if (rawDist && typeof rawDist === 'object' && Object.keys(rawDist).length > 0) {
+      const entries = Object.entries(rawDist).filter(([name]) => 
+        !["all", "total", "miners", "total miners", "other"].includes(name.toLowerCase())
+      );
+
+      const othersCount = (rawDist["Other"] || rawDist["other"] || 0) as number;
+      const total = entries.reduce((acc, [, count]) => acc + (count as number), 0) + othersCount;
+      
+      if (total > 0) {
+        const distribution = entries.map(([name, count]: [string, any]) => ({
+          name: name.toUpperCase(),
+          count,
+          value: (count / total) * 100
+        })).sort((a, b) => b.count - a.count);
+
+        if (othersCount > 0) {
+          distribution.push({
+            name: "OTHER",
+            count: othersCount,
+            value: (othersCount / total) * 100
+          });
+        }
+        
+        setGlobalStats({
+          totalMiners: total,
+          distribution
+        });
+      }
+    }
+  };
+
   const fetchGlobalStats = async () => {
     try {
-      const statsRes = await fetch("https://server.duinocoin.com/statistics").then(r => r.json());
-      if (statsRes) {
-        setPrice(parseFloat(statsRes?.["Duco price"]) || 0.002);
-        setDifficulty(statsRes?.["Current difficulty"] || 50);
-        setGlobalStats(statsRes);
-      }
+      const resp = await fetch("https://server.duinocoin.com/statistics");
+      if (!resp.ok) return;
+      const statsRes = await resp.json();
+      processStats(statsRes);
     } catch (e) {
-      console.error("Failed to fetch global stats:", e);
+      console.error("Fetch error:", e);
     }
   };
 
@@ -366,11 +422,7 @@ export default function App() {
         fetch(`https://server.duinocoin.com/user_transactions/${encodeURIComponent(targetUser.trim())}`).then(r => r.json().catch(() => ({ success: false })))
       ]);
 
-      if (statsRes) {
-        setPrice(parseFloat(statsRes?.["Duco price"]) || 0.002);
-        setDifficulty(statsRes?.["Current difficulty"] || 50);
-        setGlobalStats(statsRes);
-      }
+      processStats(statsRes);
 
       if (!userRes.success) throw new Error(t.err404);
 
@@ -407,7 +459,7 @@ export default function App() {
       <header className="flex flex-col sm:flex-row justify-between items-center mb-6 pb-5 border-b border-[var(--header-border)] gap-5">
         <div className="flex items-center gap-3 w-full sm:w-auto">
           <img 
-            src="Hleb.png" 
+            src="/images/Hleb.png" 
             alt="Hleb Logo" 
             className="h-10 w-auto object-contain" 
             onError={(e) => (e.target as HTMLImageElement).src = "https://picsum.photos/seed/duino/64/64"} 
@@ -522,126 +574,69 @@ export default function App() {
                         icon={<Activity className="w-5 h-5" />}
                         label={t.lblHashrate}
                         value={formatHashrate(data.miners.reduce((acc, m) => acc + (parseFloat(m.hashrate.toString()) || 0), 0))}
-                        subtext="Efficiency: 100%"
+                        subtext={`Efficiency: ${(data.miners.reduce((acc, m) => acc + (m.accepted || 0), 0) + data.miners.reduce((acc, m) => acc + (m.rejected || 0), 0)) > 0 ? (data.miners.reduce((acc, m) => acc + (m.accepted || 0), 0) / (data.miners.reduce((acc, m) => acc + (m.accepted || 0), 0) + data.miners.reduce((acc, m) => acc + (m.rejected || 0), 0)) * 100).toFixed(1) : "100"}%`}
                         accentColor="var(--duino-yellow)"
                       />
                     </div>
 
-                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                      {/* Mining Distribution Section */}
-                      <div className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-[var(--radius)] p-5 shadow-lg relative flex flex-col">
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                      {/* Financial Forecast (Earned Coins) - Website Style */}
+                      <div className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-[var(--radius)] p-6 shadow-sm flex flex-col group">
                         <div className="flex items-center justify-between mb-6">
-                            <div className="flex items-center gap-2 font-bold text-[var(--duino-yellow)] uppercase tracking-wider text-sm">
-                               <PieChartIcon className="w-4 h-4" />
-                               {t.lblMinerDist}
+                          <div className="flex items-center gap-3">
+                            <div className="w-8 h-8 rounded-lg bg-[var(--duino-yellow)]/10 flex items-center justify-center text-[var(--duino-yellow)]">
+                              <DollarSign className="w-5 h-5" />
                             </div>
-                            <span className="text-[8px] font-black bg-white/5 px-2 py-0.5 rounded text-[var(--text-muted)] uppercase tracking-widest">Global Network</span>
+                            <h3 className="text-sm font-bold text-[var(--text-main)] uppercase tracking-wider">{t.lblEarnedCoins}</h3>
+                          </div>
+                          <div className="text-[10px] font-bold text-[var(--text-muted)] bg-white/5 px-2 py-0.5 rounded uppercase tracking-widest">{t.lblApprox}</div>
                         </div>
-                        <div className="flex items-start justify-between mb-8">
-                           <div className="flex flex-col">
-                              <span className="text-3xl font-black text-[var(--text-main)] tracking-tighter mb-1">
-                                {globalStats ? (Number(globalStats["Total miners"]) || Object.values(globalStats["Miner distribution"] || {}).reduce((a: any, b: any) => a + (Number(b) || 0), 0)) : '---'}
-                              </span>
-                              <span className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-[2px] opacity-60">{t.lblTotalMiners}</span>
-                           </div>
-                           <div className="h-[100px] w-[100px]">
-                              <ResponsiveContainer width="100%" height="100%">
-                                 <PieChart>
-                                   <Pie
-                                     data={globalStats ? Object.entries(globalStats["Miner distribution"] || {}).map(([name, value]) => ({ name, value: Number(value) })) : []}
-                                     innerRadius={30}
-                                     outerRadius={45}
-                                     paddingAngle={4}
-                                     dataKey="value"
-                                   >
-                                     {globalStats && Object.entries(globalStats["Miner distribution"] || {}).map((entry, index) => (
-                                       <Cell key={`cell-${index}`} fill={["#818CF8", "#34D399", "#FBBF24", "#F87171", "#60A5FA", "#6366F1", "#A78BFA", "#F472B6"][index % 8]} />
-                                     ))}
-                                   </Pie>
-                                 </PieChart>
-                              </ResponsiveContainer>
-                           </div>
-                        </div>
-                        <div className="flex-1 space-y-4 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
-                           {globalStats && Object.entries(globalStats["Miner distribution"] || {}).sort((a: any, b: any) => Number(b[1]) - Number(a[1])).map(([name, val]: any, i) => {
-                              const distData = globalStats["Miner distribution"] || {};
-                              const total = Number(Object.values(distData).reduce((a: any, b: any) => a + (Number(b) || 0), 0)) || 1;
-                              const currentVal = Number(val) || 0;
-                              const percent = ((currentVal / total) * 100).toFixed(2);
-                              const colors = ["#818CF8", "#34D399", "#FBBF24", "#F87171", "#60A5FA", "#6366F1", "#A78BFA", "#F472B6"];
-                              return (
-                                <div key={i} className="flex items-center gap-3 p-2 group transition-all">
-                                   <div 
-                                     className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 border border-white/5 shadow-inner"
-                                     style={{ backgroundColor: `${colors[i % colors.length]}10`, color: colors[i % colors.length] }}
-                                   >
-                                      {name.toLowerCase().includes("esp") ? <Cpu className="w-5 h-5" /> : name.toLowerCase().includes("web") ? <Globe className="w-5 h-5" /> : name.toLowerCase().includes("arduino") ? <Hammer className="w-5 h-5" /> : <ShieldCheck className="w-5 h-5" />}
-                                   </div>
-                                   <div className="flex-1 min-w-0">
-                                      <div className="text-[13px] font-black text-[var(--text-main)] uppercase tracking-tight truncate leading-none mb-1">{name}</div>
-                                      <div className="text-[10px] font-bold text-[var(--text-muted)] opacity-60">{percent}%</div>
-                                   </div>
-                                   <div className="text-[12px] font-mono font-black text-[var(--text-main)] opacity-80">{val}</div>
-                                </div>
-                              );
-                           })}
-                        </div>
-                      </div>
-
-                      {/* Earned Coins Section (Returned to Monitoring) */}
-                      {/* Earned Coins Section (Returned to Monitoring) */}
-                      <div className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-[var(--radius)] p-6 shadow-xl relative flex flex-col min-h-[460px]">
-                        <h3 className="text-xl font-black text-[var(--duino-yellow)] mb-10 opacity-90 uppercase tracking-tighter">{t.lblEarnedCoins}</h3>
                         
-                        <div className="flex-1 space-y-10 relative">
-                           {/* Dotted lines background effect - matched to photo */}
-                           <div className="absolute inset-x-0 top-0 bottom-0 pointer-events-none opacity-[0.08] flex flex-col justify-between py-1 px-4">
-                              {[1, 2, 3, 4, 5, 6].map((it) => (
-                                <div key={it} className="border-t border-dashed border-[var(--text-muted)] w-full h-0" />
-                              ))}
-                           </div>
-                           
-                           {[
-                             { label: t.lblMin, icon: <ChevronsDown className="w-5 h-5" />, color: "#F87171", factor: 0.00001 },
-                             { label: t.lblMax, icon: <ChevronsUp className="w-5 h-5" />, color: "#34D399", factor: 0.00005 },
-                             { label: t.lblAvg, icon: <ArrowLeftRight className="w-5 h-5" />, color: "#FBBF24", factor: 0.00003 }
-                           ].map((item, i) => (
-                             <div key={i} className="flex items-center gap-6 relative z-10 transition-all hover:translate-x-1 cursor-default">
-                                <div className="w-14 h-14 rounded-xl flex items-center justify-center shrink-0 shadow-lg border border-white/5"
-                                     style={{ backgroundColor: `${item.color}15`, color: item.color }}>
-                                   {item.icon}
-                                </div>
-                                <div className="flex flex-col">
-                                   <div className="text-[13px] font-bold text-[var(--text-muted)] opacity-50 mb-0.5">{item.label}</div>
-                                   <div className="text-2xl font-black text-[var(--text-main)] font-mono tracking-tighter">
-                                      Đ {data.miners.length > 0 ? (data.miners.reduce((acc, m) => acc + (parseFloat(m.hashrate.toString()) || 0), 0) * item.factor * 1440).toFixed(2) : '-'}
-                                   </div>
-                                </div>
-                             </div>
-                           ))}
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                          {[
+                            { label: t.lblMin, color: "#FF5252", factor: 0.00001, icon: <TrendingDown className="w-4 h-4" /> },
+                            { label: t.lblAvg, color: "#FBBF24", factor: 0.00003, icon: <Zap className="w-4 h-4" /> },
+                            { label: t.lblMax, color: "#00E676", factor: 0.00005, icon: <TrendingUp className="w-4 h-4" /> }
+                          ].map((item, i) => (
+                            <div key={i} className="p-4 rounded-xl bg-white/[0.03] border border-white/5 flex flex-col gap-2 group-hover:border-[var(--duino-yellow)]/20 transition-all">
+                              <div className="flex items-center justify-between">
+                                <span className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-wider">{item.label}</span>
+                                <div className="p-1 rounded bg-white/5" style={{ color: item.color }}>{item.icon}</div>
+                              </div>
+                              <div className="flex items-baseline gap-1">
+                                <span className="text-xl font-bold text-[var(--text-main)]">
+                                  {data.miners.length > 0 ? (data.miners.reduce((acc, m) => acc + (parseFloat(m.hashrate.toString()) || 0), 0) * item.factor * 1440).toFixed(2) : '0.00'}
+                                </span>
+                                <span className="text-[9px] font-bold text-[var(--text-muted)]">DUCO</span>
+                              </div>
+                              <div className="text-[9px] font-medium text-[var(--text-muted)] opacity-50">{t.lblDaily}</div>
+                            </div>
+                          ))}
                         </div>
-
-                        {/* Decorative bottom bar and knob like in photo */}
-                        <div className="mt-auto pt-10 px-1">
-                           <div className="h-1 w-full bg-white/10 rounded-full relative">
-                              <div className="absolute top-0 left-0 h-full w-[98%] bg-gradient-to-r from-transparent via-[var(--duino-blue)]/40 to-[var(--duino-blue)] rounded-full" />
-                              <div className="absolute top-1/2 right-[2%] -translate-y-1/2 w-4 h-4 rounded-full bg-white shadow-[0_0_20px_rgba(255,255,255,1)] z-20" />
-                           </div>
+                        
+                        <div className="mt-6 pt-6 border-t border-white/5">
+                          <div className="flex justify-between items-center mb-2">
+                             <div className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-wider">Efficiency</div>
+                             <div className="text-[10px] font-bold text-[var(--duino-green)]">99.8%</div>
+                          </div>
+                          <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
+                             <div className="h-full bg-[var(--duino-yellow)] rounded-full w-[99.8%] shadow-[0_0_8px_var(--duino-yellow)]" />
+                          </div>
                         </div>
                       </div>
 
                       {/* Hashrate Chart Section */}
-                      <div className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-[var(--radius)] p-5 shadow-lg lg:col-span-1">
-                         <div className="flex items-center gap-2 mb-8 text-xs font-bold text-[var(--text-muted)] uppercase tracking-wider">
-                           <Activity className="w-3 h-3 text-[var(--duino-yellow)]" />
+                      <div className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-[var(--radius)] p-6 shadow-sm lg:col-span-1">
+                         <div className="flex items-center gap-2 mb-8 text-sm font-bold text-[var(--text-main)] uppercase tracking-wider">
+                           <Activity className="w-4 h-4 text-[var(--duino-yellow)]" />
                            {t.lblChartTitle}
                          </div>
-                         <div className="h-[400px] w-full">
+                         <div className="h-[200px] w-full">
                            <ResponsiveContainer width="100%" height="100%">
                              <AreaChart data={history}>
                                <defs>
                                  <linearGradient id="colorHrDash" x1="0" y1="0" x2="0" y2="1">
-                                   <stop offset="5%" stopColor="var(--duino-yellow)" stopOpacity={0.2}/>
+                                   <stop offset="5%" stopColor="var(--duino-yellow)" stopOpacity={0.1}/>
                                    <stop offset="95%" stopColor="var(--duino-yellow)" stopOpacity={0}/>
                                  </linearGradient>
                                </defs>
@@ -653,6 +648,81 @@ export default function App() {
                              </AreaChart>
                            </ResponsiveContainer>
                          </div>
+                      </div>
+
+                      {/* Miner Distribution Section */}
+                      <div className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-[var(--radius)] p-6 shadow-xl space-y-6">
+                        <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-2">
+                               <PieChartIcon className="w-5 h-5 text-[var(--duino-yellow)]" />
+                               <h3 className="text-base font-bold text-[var(--text-main)] uppercase tracking-wider">{t.lblMinerDist}</h3>
+                            </div>
+                            <button onClick={fetchGlobalStats} className="p-2 hover:bg-white/5 rounded-full transition-colors">
+                                <RefreshCcw className={cn("w-4 h-4", loading && "animate-spin")} />
+                            </button>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                            <div className="relative flex flex-col items-center">
+                                <div className="h-[200px] w-full">
+                                    <ResponsiveContainer width="100%" height="100%">
+                                        <PieChart>
+                                            <Pie
+                                                data={globalStats?.distribution || []}
+                                                cx="50%"
+                                                cy="50%"
+                                                innerRadius={65}
+                                                outerRadius={85}
+                                                paddingAngle={4}
+                                                dataKey="value"
+                                                stroke="none"
+                                            >
+                                                {(globalStats?.distribution || []).map((entry: any, index: number) => (
+                                                    <Cell key={`cell-${index}`} fill={getMinerColor(entry.name)} />
+                                                ))}
+                                            </Pie>
+                                            <Tooltip 
+                                                content={({ active, payload }) => {
+                                                    if (active && payload && payload.length) {
+                                                        const d = payload[0].payload;
+                                                        return (
+                                                            <div className="bg-[#1a1a1a] border border-[var(--duino-yellow-dim)] p-2 rounded-lg shadow-2xl">
+                                                                <p className="text-[10px] font-bold text-white uppercase">{d.name}</p>
+                                                                <p className="text-[12px] font-black text-[var(--duino-yellow)]">{d.count} ({d.value.toFixed(2)}%)</p>
+                                                            </div>
+                                                        );
+                                                    }
+                                                    return null;
+                                                }}
+                                            />
+                                        </PieChart>
+                                    </ResponsiveContainer>
+                                </div>
+                                <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 flex flex-col items-center text-center">
+                                    <span className="text-2xl font-black text-white">{globalStats?.totalMiners || 0}</span>
+                                    <span className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-widest">{t.lblTotalMiners}</span>
+                                </div>
+                            </div>
+
+                            <div className="space-y-3">
+                                {globalStats?.distribution?.slice(0, 8).map((item: any) => (
+                                    <div key={item.name} className="flex items-center justify-between group">
+                                        <div className="flex items-center gap-3">
+                                            <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ backgroundColor: `${getMinerColor(item.name)}20` }}>
+                                                {getMinerIcon(item.name)}
+                                            </div>
+                                            <div>
+                                                <div className="text-xs font-bold text-white uppercase">{item.name}</div>
+                                                <div className="text-[10px] font-medium text-[var(--text-muted)]">{item.value.toFixed(2)}%</div>
+                                            </div>
+                                        </div>
+                                        <div className="text-sm font-black text-[var(--text-muted)] group-hover:text-white transition-colors">
+                                            {item.count}
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
                       </div>
                     </div>
 
@@ -699,8 +769,8 @@ export default function App() {
                         <div className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-[var(--radius)] overflow-hidden shadow-lg flex flex-col lg:col-span-2">
                            <div className="p-5 border-b border-[var(--border-color)] flex items-center justify-between">
                               <div className="flex items-center gap-2 font-bold text-[var(--duino-yellow)] uppercase tracking-wider text-sm">
-                                 <Hammer className="w-4 h-4" />
-                                 {lang === "ru" ? "Шахтеры" : t.lblWorkers}
+                                 <Cpu className="w-4 h-4" />
+                                 {t.lblWorkers}
                               </div>
                               <div className="text-[var(--text-muted)] opacity-40">
                                  <ArrowLeftRight className="w-4 h-4 rotate-90" />
@@ -734,8 +804,8 @@ export default function App() {
                                        <td className="p-4 text-[11px] font-mono text-[var(--duino-red)] font-black">{m.rejected}</td>
                                        <td className="p-4 text-[11px] font-mono font-black text-[var(--text-main)]">{formatHashrate(m.hashrate)}</td>
                                        <td className="p-4 text-[11px] font-mono text-[var(--text-muted)] opacity-80">{m.diff}</td>
-                                       <td className="p-4 text-[11px] font-mono text-[var(--duino-blue)]">{m.ping ? `${m.ping}ms` : '-'}</td>
-                                       <td className="p-4 text-[11px] font-bold text-[var(--text-muted)] opacity-60 truncate max-w-[100px]">{m.pool || '-'}</td>
+                                       <td className="p-4 text-[11px] font-mono text-[var(--duino-blue)] font-bold">{m.ping !== undefined && m.ping !== null ? `${m.ping}ms` : "---"}</td>
+                                       <td className="p-4 text-[11px] font-bold text-[var(--text-main)] opacity-70 whitespace-nowrap">{m.pool || 'Default'}</td>
                                        <td className="p-4 text-[11px]">
                                           <span className="px-2 py-0.5 rounded-full bg-white/5 text-[9px] font-black uppercase text-[var(--text-muted)] border border-white/5">
                                              {m.type || "Worker"}
@@ -748,8 +818,8 @@ export default function App() {
                                    <tr>
                                      <td colSpan={12} className="p-16 text-center">
                                        <div className="flex flex-col items-center gap-3 opacity-20">
-                                          <Hammer className="w-10 h-10" />
-                                          <div className="text-sm font-black uppercase tracking-widest">{lang === "ru" ? "В таблице отсутствуют данные" : t.noMiners}</div>
+                                          <User className="w-10 h-10" />
+                                          <div className="text-sm font-black uppercase tracking-widest">{t.noMiners}</div>
                                        </div>
                                      </td>
                                    </tr>
@@ -769,7 +839,6 @@ export default function App() {
                 )}
               </div>
             )}
-
             {activeTab === "account" && (
               <div className="max-w-4xl mx-auto space-y-8">
                  {data ? (
@@ -885,7 +954,7 @@ export default function App() {
                                     <ul className="list-disc ml-5 mt-2 space-y-1">
                                         <li>We do not collect or store your passwords or private keys.</li>
                                         <li>We do not use tracking cookies.</li>
-                                        <li>All mining statistics are fetched directly from the public Duino-Coin API.</li>
+                                        <li>All statistics are fetched directly from the public Duino-Coin API.</li>
                                     </ul>
                                 </div>
 
@@ -927,25 +996,3 @@ function Card({ icon, label, value, subtext, accentColor }: { icon: React.ReactN
   );
 }
 
-function MinerRow({ miner, t }: { miner: Miner; t: any; key?: React.Key }) {
-  const hr = parseFloat(miner.hashrate.toString()) || 0;
-  const accepted = miner.accepted || 0;
-  const rejected = miner.rejected || 0;
-  const total = accepted + rejected;
-  const eff = total > 0 ? (accepted / total * 100) : (hr > 0 ? 100 : 0);
-  const color = eff > 95 ? "var(--duino-green)" : (eff > 80 ? "var(--duino-yellow)" : "var(--duino-red)");
-  return (
-    <tr className="border-b border-[var(--border-color)] last:border-none hover:bg-[var(--table-hover)] transition-all">
-      <td className="p-4 font-mono font-bold text-sm">{miner.identifier}</td>
-      <td className="p-4"><span className="text-[var(--duino-yellow)] font-bold text-xs uppercase">{miner.algorithm}</span></td>
-      <td className="p-4 font-mono font-medium text-sm">{formatHashrate(hr)}</td>
-      <td className="p-4">
-        <div className="text-[11px] font-bold mb-1.5" style={{ color }}>{eff.toFixed(1)}%</div>
-        <div className="efficiency-bar-bg h-1.5"><div className="efficiency-bar-fill h-full" style={{ width: `${eff}%`, backgroundColor: color }}></div></div>
-      </td>
-      <td className="p-4 font-mono text-sm"><span className="text-[var(--duino-green)] font-bold">{accepted}</span> / <span className={rejected > 0 ? "text-[var(--duino-red)] font-bold" : "text-[var(--text-muted)]"}>{rejected}</span></td>
-      <td className="p-4 text-[var(--text-muted)] font-mono text-sm">{miner.diff || '---'}</td>
-      <td className="p-4"><span className={cn("status-badge px-3 py-1 text-[10px] font-bold", hr > 0 ? "status-online" : "status-offline")}>{hr > 0 ? t.statusOnline : t.statusOffline}</span></td>
-    </tr>
-  );
-}
